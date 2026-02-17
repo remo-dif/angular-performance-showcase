@@ -1,0 +1,122 @@
+<div class="products-page">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>📦 Product Catalog</h1>
+    <p class="subtitle">
+      Browse our extensive collection with optimized virtual scrolling
+    </p>
+  </div>
+
+  <!-- Filters & Search -->
+  <div class="controls-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search products..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange()"
+        class="search-input"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Category:</label>
+      <select
+        [(ngModel)]="selectedCategory"
+        (change)="onCategoryChange()"
+        class="category-select"
+      >
+        <option value="all">All Categories</option>
+        <option *ngFor="let cat of categories()" [value]="cat">
+          {{ cat }}
+        </option>
+      </select>
+    </div>
+
+    <div class="stats">
+      <span class="stat-badge"> {{ filteredProducts().length }} products </span>
+      <span class="stat-badge" *ngIf="productService.loading()">
+        Loading...
+      </span>
+    </div>
+  </div>
+
+  <!-- Virtual Scroll List -->
+  <div class="products-container">
+    <cdk-virtual-scroll-viewport
+      itemSize="180"
+      class="products-viewport"
+      [style.height.px]="600"
+    >
+      <div
+        *cdkVirtualFor="let product of filteredProducts(); trackBy: trackById"
+        class="product-card"
+      >
+        <div class="product-image-wrapper">
+          <img
+            [src]="product.image"
+            [alt]="product.name"
+            loading="lazy"
+            width="120"
+            height="120"
+            class="product-image"
+          />
+          <span class="product-category">{{ product.category }}</span>
+        </div>
+
+        <div class="product-info">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-description">{{ product.description }}</p>
+
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-label">Price:</span>
+              <span class="price-value">\${{ product.price }}</span>
+            </div>
+
+            <div class="product-stock" [class.low]="product.stock < 20">
+              <span class="stock-icon">{{
+                product.stock > 0 ? "✓" : "✗"
+              }}</span>
+              <span class="stock-text">
+                {{
+                  product.stock > 0
+                    ? product.stock + " in stock"
+                    : "Out of stock"
+                }}
+              </span>
+            </div>
+          </div>
+
+          <button class="add-to-cart-btn" [disabled]="product.stock === 0">
+            {{ product.stock > 0 ? "Add to Cart" : "Unavailable" }}
+          </button>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredProducts().length === 0" class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <h3>No products found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>
+  </div>
+
+  <!-- Performance Info -->
+  <div class="performance-info">
+    <div class="info-badge">
+      <span class="badge-icon">⚡</span>
+      <span class="badge-text">
+        Virtual scrolling enabled - Only ~10 DOM nodes rendered at a time
+      </span>
+    </div>
+    <div class="info-badge">
+      <span class="badge-icon">🎯</span>
+      <span class="badge-text">
+        OnPush change detection - Optimized rendering performance
+      </span>
+    </div>
+  </div>
+</div>

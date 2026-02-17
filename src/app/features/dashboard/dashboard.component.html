@@ -1,0 +1,96 @@
+<div class="dashboard">
+  <div class="welcome-section">
+    <h1 class="welcome-title">
+      Welcome to Performance Dashboard
+      <span class="welcome-badge">v2.0</span>
+    </h1>
+    <p class="welcome-subtitle">
+      Optimized Angular 17 application showcasing advanced performance
+      techniques
+    </p>
+  </div>
+
+  <!-- Key Metrics Grid -->
+  <div class="metrics-grid">
+    <div
+      *ngFor="let metric of metrics(); trackBy: trackByLabel"
+      class="metric-card"
+      [style.--card-color]="metric.color"
+    >
+      <div class="metric-header">
+        <span class="metric-icon">{{ metric.icon }}</span>
+        <span class="metric-change" [class.positive]="metric.change > 0">
+          {{ metric.change > 0 ? "↑" : "↓" }} {{ Math.abs(metric.change) }}%
+        </span>
+      </div>
+      <div class="metric-value">{{ metric.value }}</div>
+      <div class="metric-label">{{ metric.label }}</div>
+    </div>
+  </div>
+
+  <!-- Performance Highlights -->
+  <div class="highlights-section">
+    <h2 class="section-title">🚀 Performance Highlights</h2>
+    <div class="highlights-grid">
+      <div class="highlight-card">
+        <div class="highlight-icon">⚡</div>
+        <h3>Lazy Loading</h3>
+        <p>All routes use dynamic imports with route-based code splitting</p>
+        <div class="highlight-stat">-50% bundle size</div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">🎯</div>
+        <h3>OnPush Strategy</h3>
+        <p>Change detection optimized with immutable patterns</p>
+        <div class="highlight-stat">-74% CD cycles</div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">🔄</div>
+        <h3>Smart Caching</h3>
+        <p>HTTP interceptor with 5-minute TTL and 78% hit rate</p>
+        <div class="highlight-stat">-69% API calls</div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">📦</div>
+        <h3>Virtual Scrolling</h3>
+        <p>CDK virtual scroll for lists with 1000+ items</p>
+        <div class="highlight-stat">-84% render time</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="activity-section">
+    <h2 class="section-title">📋 Recent Activity</h2>
+    <div class="activity-list">
+      <div
+        *ngFor="let activity of recentActivities(); trackBy: trackById"
+        class="activity-item"
+      >
+        <span class="activity-icon">{{ activity.icon }}</span>
+        <div class="activity-content">
+          <div class="activity-message">{{ activity.message }}</div>
+          <div class="activity-time">{{ formatTime(activity.timestamp) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="tech-section">
+    <h2 class="section-title">🛠️ Tech Stack</h2>
+    <div class="tech-grid">
+      <div class="tech-badge">Angular 17</div>
+      <div class="tech-badge">Standalone Components</div>
+      <div class="tech-badge">Signals API</div>
+      <div class="tech-badge">OnPush Strategy</div>
+      <div class="tech-badge">Virtual Scrolling</div>
+      <div class="tech-badge">HTTP Caching</div>
+      <div class="tech-badge">Lazy Loading</div>
+      <div class="tech-badge">View Transitions</div>
+    </div>
+  </div>
+</div>

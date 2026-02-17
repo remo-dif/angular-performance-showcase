@@ -1,0 +1,19 @@
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: var(--text-4xl);
+  margin-bottom: var(--space-sm);
+}
+p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+}
+.placeholder {
+  padding: var(--space-2xl);
+  background: var(--color-bg-card);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+}

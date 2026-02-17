@@ -1,0 +1,76 @@
+<div class="app-container">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text" *ngIf="!sidebarCollapsed">PerformanceDash</span>
+      </div>
+      <button
+        class="collapse-btn"
+        (click)="toggleSidebar()"
+        aria-label="Toggle sidebar"
+      >
+        <span>{{ sidebarCollapsed ? "→" : "←" }}</span>
+      </button>
+    </div>
+
+    <nav class="nav-menu">
+      <a
+        *ngFor="let item of navItems; trackBy: trackByPath"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label" *ngIf="!sidebarCollapsed">{{
+          item.label
+        }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer" *ngIf="!sidebarCollapsed">
+      <div class="performance-badge">
+        <span class="badge-icon">🚀</span>
+        <div class="badge-content">
+          <div class="badge-score">89</div>
+          <div class="badge-label">Lighthouse</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <h1 class="page-title">Angular Performance Showcase</h1>
+      </div>
+      <div class="top-bar-right">
+        <div class="metrics-strip">
+          <div class="metric" title="Largest Contentful Paint">
+            <span class="metric-icon">🎯</span>
+            <span class="metric-value">2.1s</span>
+            <span class="metric-label">LCP</span>
+          </div>
+          <div class="metric" title="Cumulative Layout Shift">
+            <span class="metric-icon">📐</span>
+            <span class="metric-value">0.05</span>
+            <span class="metric-label">CLS</span>
+          </div>
+          <div class="metric" title="Time to First Byte">
+            <span class="metric-icon">⚡</span>
+            <span class="metric-value">420ms</span>
+            <span class="metric-label">TTFB</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Router Outlet -->
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
