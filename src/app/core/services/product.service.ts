@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { catchError, map, shareReplay, tap } from "rxjs/operators";
 
@@ -17,15 +17,14 @@ export interface Product {
   providedIn: "root",
 })
 export class ProductService {
-  private apiUrl = "/api/products"; // In production, use environment variable
-  private productsCache$ = new BehaviorSubject<Product[] | null>(null);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = "/api/products"; // In production, use environment variable
+  private readonly productsCache$ = new BehaviorSubject<Product[] | null>(null);
 
   // Using signals for reactive state (Angular 17+)
-  products = signal<Product[]>([]);
-  loading = signal<boolean>(false);
-  error = signal<string | null>(null);
-
-  constructor(private http: HttpClient) {}
+  readonly products = signal<Product[]>([]);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
 
   /**
    * Get all products with caching
@@ -38,6 +37,7 @@ export class ProductService {
     }
 
     this.loading.set(true);
+    this.error.set(null);
 
     return this.http.get<Product[]>(this.apiUrl).pipe(
       tap((products) => {
@@ -49,7 +49,10 @@ export class ProductService {
         this.error.set("Failed to load products");
         this.loading.set(false);
         // Return mock data for demo purposes
-        return of(this.getMockProducts());
+        const mockProducts = this.getMockProducts();
+        this.products.set(mockProducts);
+        this.productsCache$.next(mockProducts);
+        return of(mockProducts);
       }),
       shareReplay(1), // Share the response with multiple subscribers
     );

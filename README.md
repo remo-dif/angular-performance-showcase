@@ -1,6 +1,6 @@
 # Angular Performance Showcase 🚀
 
-A production-grade Angular 17 application demonstrating advanced performance optimization techniques for e-commerce dashboards.
+A production-grade Angular 21 application demonstrating advanced performance optimization techniques for e-commerce dashboards.
 
 ## 📊 Performance Achievements
 
@@ -51,7 +51,7 @@ A production-grade Angular 17 application demonstrating advanced performance opt
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Angular 17 (Standalone Components)
+- **Framework**: Angular 21 (Standalone Components)
 - **State Management**: Signals API
 - **Styling**: SCSS with CSS Custom Properties
 - **Change Detection**: OnPush Strategy
@@ -328,4 +328,4 @@ Created as a performance engineering showcase demonstrating:
 
 **⚡ Performance is a feature, not an afterthought.**
 
-Built with Angular 17 | Optimized for Core Web Vitals | Production-Ready
+Built with Angular 21 | Optimized for Core Web Vitals | Production-Ready

@@ -20,37 +20,38 @@ import { Product, ProductService } from "../../core/services/product.service";
 })
 export class ProductsComponent implements OnInit {
   // Inject service
-  constructor(public productService: ProductService) {}
+  constructor(public readonly productService: ProductService) {}
 
   // State management with signals
-  searchQuery = "";
-  selectedCategory = "all";
+  readonly searchQuery = signal("");
+  readonly selectedCategory = signal("all");
 
-  allProducts = signal<Product[]>([]);
+  readonly allProducts = signal<Product[]>([]);
 
   // Computed signals for filtering
-  filteredProducts = computed(() => {
+  readonly filteredProducts = computed(() => {
     let products = this.allProducts();
+    const selectedCategory = this.selectedCategory();
+    const searchQuery = this.searchQuery().trim().toLowerCase();
 
     // Filter by category
-    if (this.selectedCategory !== "all") {
-      products = products.filter((p) => p.category === this.selectedCategory);
+    if (selectedCategory !== "all") {
+      products = products.filter((p) => p.category === selectedCategory);
     }
 
     // Filter by search query
-    if (this.searchQuery.trim()) {
-      const query = this.searchQuery.toLowerCase();
+    if (searchQuery) {
       products = products.filter(
         (p) =>
-          p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query),
+          p.name.toLowerCase().includes(searchQuery) ||
+          p.description.toLowerCase().includes(searchQuery),
       );
     }
 
     return products;
   });
 
-  categories = computed(() => {
+  readonly categories = computed(() => {
     const products = this.allProducts();
     return Array.from(new Set(products.map((p) => p.category))).sort();
   });
@@ -70,16 +71,6 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  onSearchChange(): void {
-    // Trigger computed signal recalculation
-    // Angular automatically handles this with signals
-  }
-
-  onCategoryChange(): void {
-    // Trigger computed signal recalculation
-  }
-
-  // TrackBy for virtual scroll performance
   trackById(index: number, item: Product): string {
     return item.id;
   }

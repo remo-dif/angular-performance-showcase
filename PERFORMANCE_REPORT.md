@@ -244,7 +244,7 @@ getLCP(metric => analytics.track('LCP', metric.value));
 
 ## Technical Specifications
 
-- **Framework**: Angular 17.3.0
+- **Framework**: Angular 21.2.x
 - **Node**: 18+
 - **TypeScript**: 5.4.0
 - **Build Tool**: Angular CLI

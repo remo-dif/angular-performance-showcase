@@ -1,5 +1,4 @@
-import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 
 interface NavItem {
@@ -11,15 +10,15 @@ interface NavItem {
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush, // Performance optimization
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  sidebarCollapsed = false;
+  readonly sidebarCollapsed = signal(false);
 
-  navItems: NavItem[] = [
+  readonly navItems: readonly NavItem[] = [
     { path: "/dashboard", label: "Dashboard", icon: "📊" },
     { path: "/products", label: "Products", icon: "📦" },
     { path: "/analytics", label: "Analytics", icon: "📈" },
@@ -28,11 +27,6 @@ export class AppComponent {
   ];
 
   toggleSidebar(): void {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
-  }
-
-  // TrackBy for performance optimization in *ngFor
-  trackByPath(index: number, item: NavItem): string {
-    return item.path;
+    this.sidebarCollapsed.update((collapsed) => !collapsed);
   }
 }

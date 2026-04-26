@@ -1,35 +1,39 @@
 <div class="app-container">
   <!-- Sidebar Navigation -->
-  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
     <div class="sidebar-header">
       <div class="logo">
         <span class="logo-icon">⚡</span>
-        <span class="logo-text" *ngIf="!sidebarCollapsed">PerformanceDash</span>
+        @if (!sidebarCollapsed()) {
+          <span class="logo-text">PerformanceDash</span>
+        }
       </div>
       <button
         class="collapse-btn"
         (click)="toggleSidebar()"
         aria-label="Toggle sidebar"
       >
-        <span>{{ sidebarCollapsed ? "→" : "←" }}</span>
+        <span>{{ sidebarCollapsed() ? "→" : "←" }}</span>
       </button>
     </div>
 
     <nav class="nav-menu">
-      <a
-        *ngFor="let item of navItems; trackBy: trackByPath"
-        [routerLink]="item.path"
-        routerLinkActive="active"
-        class="nav-item"
-      >
-        <span class="nav-icon">{{ item.icon }}</span>
-        <span class="nav-label" *ngIf="!sidebarCollapsed">{{
-          item.label
-        }}</span>
-      </a>
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          class="nav-item"
+        >
+          <span class="nav-icon">{{ item.icon }}</span>
+          @if (!sidebarCollapsed()) {
+            <span class="nav-label">{{ item.label }}</span>
+          }
+        </a>
+      }
     </nav>
 
-    <div class="sidebar-footer" *ngIf="!sidebarCollapsed">
+    @if (!sidebarCollapsed()) {
+    <div class="sidebar-footer">
       <div class="performance-badge">
         <span class="badge-icon">🚀</span>
         <div class="badge-content">
@@ -38,6 +42,7 @@
         </div>
       </div>
     </div>
+    }
   </aside>
 
   <!-- Main Content Area -->

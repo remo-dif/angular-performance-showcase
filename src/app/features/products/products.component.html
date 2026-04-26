@@ -14,8 +14,8 @@
       <input
         type="text"
         placeholder="Search products..."
-        [(ngModel)]="searchQuery"
-        (input)="onSearchChange()"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
         class="search-input"
       />
     </div>
@@ -23,22 +23,22 @@
     <div class="filter-group">
       <label>Category:</label>
       <select
-        [(ngModel)]="selectedCategory"
-        (change)="onCategoryChange()"
+        [ngModel]="selectedCategory()"
+        (ngModelChange)="selectedCategory.set($event)"
         class="category-select"
       >
         <option value="all">All Categories</option>
-        <option *ngFor="let cat of categories()" [value]="cat">
-          {{ cat }}
-        </option>
+        @for (cat of categories(); track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
       </select>
     </div>
 
     <div class="stats">
       <span class="stat-badge"> {{ filteredProducts().length }} products </span>
-      <span class="stat-badge" *ngIf="productService.loading()">
-        Loading...
-      </span>
+      @if (productService.loading()) {
+        <span class="stat-badge">Loading...</span>
+      }
     </div>
   </div>
 
@@ -97,11 +97,13 @@
     </cdk-virtual-scroll-viewport>
 
     <!-- Empty State -->
-    <div *ngIf="filteredProducts().length === 0" class="empty-state">
+    @if (filteredProducts().length === 0) {
+    <div class="empty-state">
       <div class="empty-icon">🔍</div>
       <h3>No products found</h3>
       <p>Try adjusting your search or filters</p>
     </div>
+    }
   </div>
 
   <!-- Performance Info -->
