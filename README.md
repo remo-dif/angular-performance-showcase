@@ -1,6 +1,6 @@
 # Angular Performance Showcase 🚀
 
-A production-grade Angular 21 application demonstrating advanced performance optimization techniques for e-commerce dashboards.
+A production-grade Angular 22 application demonstrating advanced performance optimization techniques for e-commerce dashboards.
 
 ## 📊 Performance Achievements
 
@@ -25,7 +25,7 @@ A production-grade Angular 21 application demonstrating advanced performance opt
 - ✅ OnPush strategy on 22/28 components
 - ✅ Virtual scrolling (CDK) for long lists
 - ✅ DetachChangeDetector for static content
-- ✅ TrackBy functions for all *ngFor loops
+- ✅ `@for` tracking for repeated template blocks
 - ✅ Immutable data patterns
 
 ### 3. **Network & API Optimization**
@@ -51,14 +51,15 @@ A production-grade Angular 21 application demonstrating advanced performance opt
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Angular 21 (Standalone Components)
+- **Framework**: Angular 22 (Standalone Components)
 - **State Management**: Signals API
 - **Styling**: SCSS with CSS Custom Properties
 - **Change Detection**: OnPush Strategy
 - **Scrolling**: Angular CDK Virtual Scroll
 - **HTTP**: Fetch API with custom caching
 - **Routing**: Lazy Loading with View Transitions
-- **Performance Monitoring**: Web Vitals API
+- **Build System**: `@angular/build` esbuild/Vite application builder
+- **Performance Monitoring**: Web Vitals API with LCP, INP, and CLS tracking
 
 ## 📦 Project Structure
 
@@ -94,8 +95,9 @@ angular-performance-showcase/
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Angular CLI 17+
+- Node.js 22.22.3+, 24.15.0+, or 26.0.0+
+- pnpm 11+
+- Angular CLI 22+
 
 ### Installation
 
@@ -105,10 +107,10 @@ git clone <repository-url>
 cd angular-performance-showcase
 
 # Install dependencies
-npm install
+pnpm install
 
 # Start development server
-npm start
+pnpm start
 
 # Open browser
 open http://localhost:4200
@@ -118,13 +120,13 @@ open http://localhost:4200
 
 ```bash
 # Production build with optimizations
-npm run build:prod
+pnpm run build:prod
 
 # Analyze bundle size
-npm run analyze
+pnpm run analyze
 
 # Run Lighthouse CI
-npm run lighthouse
+pnpm run lighthouse
 ```
 
 ## 📈 Performance Testing
@@ -133,10 +135,10 @@ npm run lighthouse
 
 ```bash
 # Install Lighthouse CI
-npm install -g @lhci/cli
+pnpm add -g @lhci/cli
 
 # Run automated tests
-npm run lighthouse
+pnpm run lighthouse
 ```
 
 ### Manual Testing Checklist
@@ -185,7 +187,7 @@ export class ProductCardComponent {
 ```html
 <cdk-virtual-scroll-viewport itemSize="180" [style.height.px]="600">
   <div *cdkVirtualFor="let product of products; trackBy: trackById">
-    <app-product-card [product]="product"></app-product-card>
+    <app-product-card [product]="product" />
   </div>
 </cdk-virtual-scroll-viewport>
 ```
@@ -217,13 +219,20 @@ export const cachingInterceptor: HttpInterceptorFn = (req, next) => {
 The app automatically tracks Core Web Vitals:
 
 ```typescript
-// main.ts
-const reportWebVitals = (metric: any) => {
+type WebVitalName = 'LCP' | 'INP' | 'CLS';
+
+interface WebVitalMetric {
+  name: WebVitalName;
+  value: number;
+  rating: 'good' | 'needs-improvement' | 'poor';
+}
+
+const reportWebVitals = (metric: WebVitalMetric): void => {
   console.log(`[Web Vitals] ${metric.name}:`, metric.value, metric.rating);
   // Send to analytics in production
 };
 
-// LCP, FID, CLS automatically tracked
+// LCP, INP, and CLS are automatically tracked
 ```
 
 ### Real User Monitoring (RUM)
@@ -239,25 +248,25 @@ In production, integrate with:
 ### Unit Tests
 
 ```bash
-npm test
+pnpm test
 ```
 
 ### E2E Tests
 
 ```bash
-npm run e2e
+pnpm run e2e
 ```
 
 ### Performance Regression Tests
 
 ```bash
-npm run lighthouse
+pnpm run lighthouse
 ```
 
 ## 📊 Bundle Analysis
 
 ```bash
-npm run analyze
+pnpm run analyze
 ```
 
 This generates an interactive treemap showing:
@@ -328,4 +337,4 @@ Created as a performance engineering showcase demonstrating:
 
 **⚡ Performance is a feature, not an afterthought.**
 
-Built with Angular 21 | Optimized for Core Web Vitals | Production-Ready
+Built with Angular 22 | Optimized for Core Web Vitals | Production-Ready

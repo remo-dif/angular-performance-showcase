@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,19 +23,14 @@ interface RecentActivity {
 
 @Component({
   selector: "app-dashboard",
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"],
+  styleUrl: "./dashboard.component.scss",
 })
 export class DashboardComponent implements OnInit {
-  // Using signals for reactive state
-  metrics = signal<Metric[]>([]);
-  recentActivities = signal<RecentActivity[]>([]);
-
-  // Expose Math for template
-  Math = Math;
+  readonly metrics = signal<Metric[]>([]);
+  readonly recentActivities = signal<RecentActivity[]>([]);
 
   ngOnInit(): void {
     this.loadMetrics();
@@ -133,12 +127,7 @@ export class DashboardComponent implements OnInit {
     return `${diffDays} days ago`;
   }
 
-  // TrackBy functions for performance
-  trackByLabel(index: number, item: Metric): string {
-    return item.label;
-  }
-
-  trackById(index: number, item: RecentActivity): string {
-    return item.id;
+  absChange(change: number): number {
+    return Math.abs(change);
   }
 }

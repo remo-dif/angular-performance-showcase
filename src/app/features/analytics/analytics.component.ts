@@ -1,12 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-analytics',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './analytics.component.html',
-  styleUrls: ['./analytics.component.scss'],
+  styleUrl: './analytics.component.scss',
 })
 export class AnalyticsComponent {}

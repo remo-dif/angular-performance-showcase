@@ -1,7 +1,8 @@
 {
   "name": "angular-performance-showcase",
   "version": "2.0.0",
-  "description": "Angular 21 E-Commerce Dashboard - Performance Optimization Showcase",
+  "description": "Angular 22 E-Commerce Dashboard - Performance Optimization Showcase",
+  "packageManager": "pnpm@11.19.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,30 +10,30 @@
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "e2e": "playwright test",
     "analyze": "ng build --configuration production --stats-json && webpack-bundle-analyzer dist/angular-performance-showcase/stats.json",
     "lighthouse": "lhci autorun"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^21.2.10",
-    "@angular/cdk": "^21.2.8",
-    "@angular/common": "^21.2.10",
-    "@angular/compiler": "^21.2.10",
-    "@angular/core": "^21.2.10",
-    "@angular/forms": "^21.2.10",
-    "@angular/platform-browser": "^21.2.10",
-    "@angular/platform-browser-dynamic": "^21.2.10",
-    "@angular/router": "^21.2.10",
+    "@angular/cdk": "^22.1.4",
+    "@angular/common": "^22.1.4",
+    "@angular/compiler": "^22.1.4",
+    "@angular/core": "^22.1.4",
+    "@angular/forms": "^22.1.4",
+    "@angular/platform-browser": "^22.1.4",
+    "@angular/router": "^22.1.4",
     "date-fns": "^3.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.6.0",
     "zone.js": "^0.15.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^21.2.8",
-    "@angular/cli": "^21.2.8",
-    "@angular/compiler-cli": "^21.2.10",
+    "@angular/build": "^22.1.6",
+    "@angular/cli": "^22.1.6",
+    "@angular/compiler-cli": "^22.1.4",
     "@lhci/cli": "^0.13.0",
+    "@playwright/test": "^1.62.1",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -40,7 +41,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.0",
+    "typescript": "~6.0.0",
     "webpack-bundle-analyzer": "^4.10.0"
   }
 }

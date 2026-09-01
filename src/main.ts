@@ -2,18 +2,37 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
 
+type WebVitalName = 'LCP' | 'INP' | 'CLS';
+type WebVitalRating = 'good' | 'needs-improvement' | 'poor';
+
+interface WebVitalMetric {
+  name: WebVitalName;
+  value: number;
+  rating: WebVitalRating;
+}
+
+interface LargestContentfulPaintEntry extends PerformanceEntry {
+  loadTime: number;
+  renderTime: number;
+}
+
+interface InteractionPerformanceEntry extends PerformanceEntry {
+  duration: number;
+}
+
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean;
+  value: number;
+}
+
+type InteractionObserverOptions = PerformanceObserverInit & {
+  durationThreshold: number;
+};
+
 // Web Vitals Performance Monitoring
-const reportWebVitals = (metric: any) => {
+const reportWebVitals = (metric: WebVitalMetric): void => {
   // In production, send to analytics
   console.log(`[Web Vitals] ${metric.name}:`, metric.value, metric.rating);
-  
-  // Could send to analytics service:
-  // analytics.track('web-vital', {
-  //   name: metric.name,
-  //   value: metric.value,
-  //   rating: metric.rating,
-  //   id: metric.id
-  // });
 };
 
 // Measure app bootstrap time
@@ -31,41 +50,53 @@ if ('PerformanceObserver' in window) {
   // Largest Contentful Paint (LCP)
   try {
     const lcpObserver = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
-      const lastEntry = entries[entries.length - 1] as any;
+      const entries = list.getEntries() as LargestContentfulPaintEntry[];
+      const lastEntry = entries.at(-1);
+      if (!lastEntry) {
+        return;
+      }
+
+      const value = lastEntry.renderTime || lastEntry.loadTime;
       reportWebVitals({
         name: 'LCP',
-        value: lastEntry.renderTime || lastEntry.loadTime,
-        rating: lastEntry.renderTime < 2500 ? 'good' : lastEntry.renderTime < 4000 ? 'needs-improvement' : 'poor'
+        value,
+        rating: value < 2500 ? 'good' : value < 4000 ? 'needs-improvement' : 'poor'
       });
     });
     lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-  } catch (e) {
+  } catch {
     // LCP not supported
   }
-  
-  // First Input Delay (FID)
+
+  // Interaction to Next Paint (INP)
+  let inpValue = 0;
   try {
-    const fidObserver = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
-      entries.forEach((entry: any) => {
+    const inpObserver = new PerformanceObserver((list) => {
+      const entries = list.getEntries() as InteractionPerformanceEntry[];
+      for (const entry of entries) {
+        inpValue = Math.max(inpValue, entry.duration);
         reportWebVitals({
-          name: 'FID',
-          value: entry.processingStart - entry.startTime,
-          rating: entry.processingStart - entry.startTime < 100 ? 'good' : 'needs-improvement'
+          name: 'INP',
+          value: inpValue,
+          rating: inpValue < 200 ? 'good' : inpValue < 500 ? 'needs-improvement' : 'poor'
         });
-      });
+      }
     });
-    fidObserver.observe({ entryTypes: ['first-input'] });
-  } catch (e) {
-    // FID not supported
+    const inpObserverOptions: InteractionObserverOptions = {
+      type: 'event',
+      buffered: true,
+      durationThreshold: 40,
+    };
+    inpObserver.observe(inpObserverOptions);
+  } catch {
+    // INP not supported
   }
-  
+
   // Cumulative Layout Shift (CLS)
   let clsValue = 0;
   try {
     const clsObserver = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries() as any[]) {
+      for (const entry of list.getEntries() as LayoutShiftEntry[]) {
         if (!entry.hadRecentInput) {
           clsValue += entry.value;
         }
@@ -77,7 +108,7 @@ if ('PerformanceObserver' in window) {
       });
     });
     clsObserver.observe({ entryTypes: ['layout-shift'] });
-  } catch (e) {
+  } catch {
     // CLS not supported
   }
 }

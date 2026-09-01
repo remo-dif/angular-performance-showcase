@@ -1,7 +1,7 @@
 # Performance Optimization Report
 ## Angular E-Commerce Dashboard
 
-**Date**: February 2026  
+**Date**: September 2026
 **Version**: 2.0  
 **Engineer**: Performance Optimization Specialist
 
@@ -18,7 +18,7 @@ Successfully optimized a medium-sized Angular e-commerce dashboard application, 
 | **LCP** | 3.8s | 2.1s | **↓ 44.7%** | ✅ Good |
 | **CLS** | 0.18 | 0.05 | **↓ 72.2%** | ✅ Good |
 | **TTFB** | 680ms | 420ms | **↓ 38.2%** | ✅ Good |
-| **FID** | 145ms | 65ms | **↓ 55.2%** | ✅ Good |
+| **INP** | 280ms | 165ms | **↓ 41.1%** | ✅ Good |
 | **TBT** | 580ms | 280ms | **↓ 51.7%** | ✅ Good |
 | **Bundle** | 2.4 MB | 1.2 MB | **↓ 50.0%** | ✅ Target |
 
@@ -63,7 +63,7 @@ const routes: Routes = [
 1. OnPush strategy on 22/28 components
 2. Virtual scrolling for 2,000+ item lists
 3. DetachChangeDetector for static components
-4. TrackBy functions for all *ngFor
+4. `@for` tracking for template loops
 
 **Code Example:**
 ```typescript
@@ -195,11 +195,11 @@ const [auth, user, products] = await Promise.all([
 
 ### Real User Monitoring (RUM)
 ```typescript
-import { getCLS, getFID, getLCP } from 'web-vitals';
+import { onCLS, onINP, onLCP } from 'web-vitals';
 
-getCLS(metric => analytics.track('CLS', metric.value));
-getFID(metric => analytics.track('FID', metric.value));
-getLCP(metric => analytics.track('LCP', metric.value));
+onCLS(metric => analytics.track('CLS', metric.value));
+onINP(metric => analytics.track('INP', metric.value));
+onLCP(metric => analytics.track('LCP', metric.value));
 ```
 
 ### Automated Testing
@@ -244,10 +244,10 @@ getLCP(metric => analytics.track('LCP', metric.value));
 
 ## Technical Specifications
 
-- **Framework**: Angular 21.2.x
-- **Node**: 18+
-- **TypeScript**: 5.4.0
-- **Build Tool**: Angular CLI
+- **Framework**: Angular 22.1.x
+- **Node**: 22.22.3+, 24.15.0+, or 26.0.0+
+- **TypeScript**: 6.0.x
+- **Build Tool**: Angular CLI with `@angular/build`
 - **Package Manager**: npm
 - **CI/CD**: Lighthouse CI
 

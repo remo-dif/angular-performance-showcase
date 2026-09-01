@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, signal } from "@angular/core";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { catchError, map, shareReplay, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { catchError, finalize, map, shareReplay, tap } from "rxjs/operators";
 
 export interface Product {
   id: string;
@@ -18,52 +18,62 @@ export interface Product {
 })
 export class ProductService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = "/api/products"; // In production, use environment variable
-  private readonly productsCache$ = new BehaviorSubject<Product[] | null>(null);
+  private readonly apiUrl = "/api/products";
+  private productsCache: Product[] | null = null;
+  private productsRequest$?: Observable<Product[]>;
 
-  // Using signals for reactive state (Angular 17+)
-  readonly products = signal<Product[]>([]);
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
+  private readonly productsState = signal<Product[]>([]);
+  private readonly loadingState = signal(false);
+  private readonly errorState = signal<string | null>(null);
+
+  readonly products = this.productsState.asReadonly();
+  readonly loading = this.loadingState.asReadonly();
+  readonly error = this.errorState.asReadonly();
 
   /**
    * Get all products with caching
    * Uses shareReplay to prevent duplicate API calls
    */
   getProducts(): Observable<Product[]> {
-    // Return cached observable if available
-    if (this.productsCache$.value) {
-      return of(this.productsCache$.value);
+    if (this.productsCache) {
+      return of(this.productsCache);
     }
 
-    this.loading.set(true);
-    this.error.set(null);
+    if (this.productsRequest$) {
+      return this.productsRequest$;
+    }
 
-    return this.http.get<Product[]>(this.apiUrl).pipe(
+    this.loadingState.set(true);
+    this.errorState.set(null);
+
+    this.productsRequest$ = this.http.get<Product[]>(this.apiUrl).pipe(
       tap((products) => {
-        this.products.set(products);
-        this.productsCache$.next(products);
-        this.loading.set(false);
+        this.productsState.set(products);
+        this.productsCache = products;
       }),
-      catchError((error) => {
-        this.error.set("Failed to load products");
-        this.loading.set(false);
-        // Return mock data for demo purposes
+      catchError(() => {
+        this.errorState.set("Failed to load products");
         const mockProducts = this.getMockProducts();
-        this.products.set(mockProducts);
-        this.productsCache$.next(mockProducts);
+        this.productsState.set(mockProducts);
+        this.productsCache = mockProducts;
         return of(mockProducts);
       }),
-      shareReplay(1), // Share the response with multiple subscribers
+      finalize(() => {
+        this.loadingState.set(false);
+        this.productsRequest$ = undefined;
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
+
+    return this.productsRequest$;
   }
 
   /**
    * Get product by ID
    */
   getProductById(id: string): Observable<Product | undefined> {
-    if (this.productsCache$.value) {
-      const product = this.productsCache$.value.find((p) => p.id === id);
+    if (this.productsCache) {
+      const product = this.productsCache.find((p) => p.id === id);
       return of(product);
     }
 
@@ -114,9 +124,9 @@ export class ProductService {
       products.push({
         id: `prod-${i}`,
         name: `Product ${i}`,
-        price: Math.floor(Math.random() * 1000) + 10,
-        category: categories[Math.floor(Math.random() * categories.length)],
-        stock: Math.floor(Math.random() * 100),
+        price: ((i * 73) % 990) + 10,
+        category: categories[i % categories.length],
+        stock: (i * 17) % 100,
         image: `https://picsum.photos/seed/${i}/400/300`,
         description: `High-quality product ${i} with excellent features and reliability.`,
       });
@@ -129,7 +139,8 @@ export class ProductService {
    * Clear cache manually
    */
   clearCache(): void {
-    this.productsCache$.next(null);
-    this.products.set([]);
+    this.productsCache = null;
+    this.productsState.set([]);
+    this.errorState.set(null);
   }
 }

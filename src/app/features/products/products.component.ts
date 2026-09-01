@@ -1,9 +1,9 @@
 import { ScrollingModule } from "@angular/cdk/scrolling";
-import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   OnInit,
   signal,
 } from "@angular/core";
@@ -12,15 +12,13 @@ import { Product, ProductService } from "../../core/services/product.service";
 
 @Component({
   selector: "app-products",
-  standalone: true,
-  imports: [CommonModule, ScrollingModule, FormsModule],
+  imports: [ScrollingModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./products.component.html",
-  styleUrls: ["./products.component.scss"],
+  styleUrl: "./products.component.scss",
 })
 export class ProductsComponent implements OnInit {
-  // Inject service
-  constructor(public readonly productService: ProductService) {}
+  readonly productService = inject(ProductService);
 
   // State management with signals
   readonly searchQuery = signal("");

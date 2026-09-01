@@ -9,11 +9,10 @@ interface NavItem {
 
 @Component({
   selector: "app-root",
-  standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush, // Performance optimization
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  styleUrl: "./app.component.scss",
 })
 export class AppComponent {
   readonly sidebarCollapsed = signal(false);

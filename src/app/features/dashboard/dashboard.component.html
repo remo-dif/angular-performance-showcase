@@ -5,27 +5,25 @@
       <span class="welcome-badge">v2.0</span>
     </h1>
     <p class="welcome-subtitle">
-      Optimized Angular 21 application showcasing advanced performance
+      Optimized Angular 22 application showcasing advanced performance
       techniques
     </p>
   </div>
 
   <!-- Key Metrics Grid -->
   <div class="metrics-grid">
-    <div
-      *ngFor="let metric of metrics(); trackBy: trackByLabel"
-      class="metric-card"
-      [style.--card-color]="metric.color"
-    >
+    @for (metric of metrics(); track metric.label) {
+    <div class="metric-card" [style.--card-color]="metric.color">
       <div class="metric-header">
         <span class="metric-icon">{{ metric.icon }}</span>
         <span class="metric-change" [class.positive]="metric.change > 0">
-          {{ metric.change > 0 ? "↑" : "↓" }} {{ Math.abs(metric.change) }}%
+          {{ metric.change > 0 ? "↑" : "↓" }} {{ absChange(metric.change) }}%
         </span>
       </div>
       <div class="metric-value">{{ metric.value }}</div>
       <div class="metric-label">{{ metric.label }}</div>
     </div>
+    }
   </div>
 
   <!-- Performance Highlights -->
@@ -66,16 +64,15 @@
   <div class="activity-section">
     <h2 class="section-title">📋 Recent Activity</h2>
     <div class="activity-list">
-      <div
-        *ngFor="let activity of recentActivities(); trackBy: trackById"
-        class="activity-item"
-      >
+      @for (activity of recentActivities(); track activity.id) {
+      <div class="activity-item">
         <span class="activity-icon">{{ activity.icon }}</span>
         <div class="activity-content">
           <div class="activity-message">{{ activity.message }}</div>
           <div class="activity-time">{{ formatTime(activity.timestamp) }}</div>
         </div>
       </div>
+      }
     </div>
   </div>
 
@@ -83,7 +80,7 @@
   <div class="tech-section">
     <h2 class="section-title">🛠️ Tech Stack</h2>
     <div class="tech-grid">
-      <div class="tech-badge">Angular 21</div>
+      <div class="tech-badge">Angular 22</div>
       <div class="tech-badge">Standalone Components</div>
       <div class="tech-badge">Signals API</div>
       <div class="tech-badge">OnPush Strategy</div>
