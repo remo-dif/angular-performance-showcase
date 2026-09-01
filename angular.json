@@ -27,12 +27,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "mockServiceWorker.js",
-                "input": "src",
-                "output": "/"
-              }
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
@@ -65,6 +60,22 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "development-msw": {
+              "browser": "src/main.msw.ts",
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                {
+                  "glob": "mockServiceWorker.js",
+                  "input": "src",
+                  "output": "/"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -77,6 +88,9 @@
             },
             "development": {
               "buildTarget": "angular-performance-showcase:build:development"
+            },
+            "msw": {
+              "buildTarget": "angular-performance-showcase:build:development-msw"
             }
           },
           "defaultConfiguration": "development"
