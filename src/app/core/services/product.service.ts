@@ -1,5 +1,6 @@
 import { computed, inject, Injectable } from "@angular/core";
 import { ProductApiService } from "../../data/products/product-api.service";
+import { createMockProducts } from "../../data/products/product.mock";
 import { Product } from "../../domain/products/product.model";
 import { ProductCatalogService } from "./product-catalog.service";
 
@@ -13,7 +14,7 @@ export class ProductService {
   private readonly catalog = inject(ProductCatalogService);
 
   private readonly productsResource = this.productApi.productsResource;
-  private readonly fallbackProducts = this.catalog.getMockProducts();
+  private readonly fallbackProducts = createMockProducts();
 
   readonly products = computed(() => {
     if (this.productsResource.hasValue()) {

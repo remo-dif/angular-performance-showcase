@@ -41,7 +41,13 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "msw": "^2.15.0",
     "typescript": "~6.0.0",
     "webpack-bundle-analyzer": "^4.10.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "src"
+    ]
   }
 }

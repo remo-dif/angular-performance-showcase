@@ -1,3 +1,4 @@
+import { isDevMode } from "@angular/core";
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
@@ -38,7 +39,20 @@ const reportWebVitals = (metric: WebVitalMetric): void => {
 // Measure app bootstrap time
 const bootstrapStart = performance.now();
 
-bootstrapApplication(AppComponent, appConfig)
+async function enableMocking(): Promise<void> {
+  if (!isDevMode()) {
+    return;
+  }
+
+  const { worker } = await import("./mocks/browser");
+
+  await worker.start({
+    onUnhandledRequest: "bypass",
+  });
+}
+
+enableMocking()
+  .then(() => bootstrapApplication(AppComponent, appConfig))
   .then(() => {
     const bootstrapEnd = performance.now();
     console.log(`[Performance] Bootstrap time: ${(bootstrapEnd - bootstrapStart).toFixed(2)}ms`);
