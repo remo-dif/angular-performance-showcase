@@ -57,6 +57,7 @@ A production-grade Angular 22 application demonstrating advanced performance opt
 - **Change Detection**: OnPush Strategy
 - **Scrolling**: Angular CDK Virtual Scroll
 - **HTTP**: Fetch API with custom caching
+- **API Mocking**: MSW for opt-in local product API mocks
 - **Routing**: Lazy Loading with View Transitions
 - **Build System**: `@angular/build` esbuild/Vite application builder
 - **Performance Monitoring**: Web Vitals API with LCP, INP, and CLS tracking
@@ -71,7 +72,15 @@ angular-performance-showcase/
 │   │   │   ├── interceptors/
 │   │   │   │   └── caching.interceptor.ts    # HTTP caching
 │   │   │   └── services/
-│   │   │       └── product.service.ts         # Data service
+│   │   │       ├── product-catalog.service.ts # Product filtering and lookup
+│   │   │       └── product.service.ts         # Product facade for UI
+│   │   ├── data/
+│   │   │   └── products/
+│   │   │       ├── product-api.service.ts     # Product HTTP resource
+│   │   │       └── product.mock.ts            # Mock product factory
+│   │   ├── domain/
+│   │   │   └── products/
+│   │   │       └── product.model.ts           # Product domain model
 │   │   ├── features/
 │   │   │   ├── dashboard/                     # Main dashboard
 │   │   │   ├── products/                      # Virtual scroll demo
@@ -83,7 +92,12 @@ angular-performance-showcase/
 │   │   ├── app.config.ts                      # App configuration
 │   │   └── app.routes.ts                      # Lazy routes
 │   ├── styles.scss                            # Global styles
-│   ├── main.ts                                # Bootstrap with monitoring
+│   ├── mocks/
+│   │   ├── browser.ts                         # MSW browser worker setup
+│   │   └── handlers.ts                        # Mock API handlers
+│   ├── app.bootstrap.ts                       # Shared bootstrap with monitoring
+│   ├── main.ts                                # Normal app bootstrap
+│   ├── main.msw.ts                            # MSW-enabled bootstrap
 │   └── index.html                             # Critical CSS inline
 ├── angular.json                               # Angular CLI config
 ├── package.json                               # Dependencies
@@ -116,11 +130,37 @@ pnpm start
 open http://localhost:4200
 ```
 
+### Optional MSW API Mocking
+
+The product catalog calls `/api/products` through Angular `httpResource`. By default, `pnpm start` does not enable mocks, so that endpoint must be served by a backend or proxy.
+
+For local frontend-only development, start the app with MSW:
+
+```bash
+pnpm run msw
+```
+
+or:
+
+```bash
+pnpm run start:msw
+```
+
+This starts Angular with the `development-msw` configuration. MSW intercepts:
+
+- `GET /api/products`
+- `GET /api/products/:id`
+
+The mock worker is only included in the MSW-specific Angular configuration, keeping the normal development and production builds free of the mock service worker.
+
 ### Build for Production
 
 ```bash
 # Production build with optimizations
 pnpm run build:prod
+
+# Development build with MSW enabled
+pnpm run build:msw
 
 # Analyze bundle size
 pnpm run analyze
